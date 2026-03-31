@@ -2,6 +2,7 @@ package board_project.board.domain;
 
 import board_project.board.BoardApplication;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "USERS")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

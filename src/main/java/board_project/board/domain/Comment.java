@@ -1,13 +1,14 @@
 package board_project.board.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "COMMENTS")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +26,7 @@ public class Comment {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    //== 생성 메서드==//
+    //==생성 메서드==//
     public static Comment createComment(String content, User user, Board board) {
         Comment comment = new Comment();
         comment.content = content;
@@ -34,6 +35,11 @@ public class Comment {
         comment.confirmBoard(board);
 
         return comment;
+    }
+
+    //==수정 메서드==//
+    public void updateComment(String content) {
+        this.content = content;
     }
 
     //==연관관계 메서드==//
