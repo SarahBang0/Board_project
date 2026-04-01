@@ -18,9 +18,18 @@ public class UserService {
     // 회원 가입
     @Transactional
     public Long join(String name, String email) {
+        //중복 이메일 검증
+        validateDuplicateUser(email);
         User user = User.createUser(name, email);
         userRepository.save(user);
         return user.getId();
+    }
+
+    // 중복 이메일 검증 로직
+    private void validateDuplicateUser(String email) {
+        if(!userRepository.findByEmail(email).isEmpty()) {
+            throw new IllegalStateException("이미 존재하는 이메일입니다.");
+        }
     }
 
     // 회원 조회

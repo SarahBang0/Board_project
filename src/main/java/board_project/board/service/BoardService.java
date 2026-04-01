@@ -34,6 +34,13 @@ public class BoardService {
         board.updateBoard(title, content);
     }
 
+    @Transactional
+    public void removeBoard(Long boardId) {
+        Board board = boardRepository.findOne(boardId);
+        board.remove();
+        boardRepository.remove(board);
+    }
+
     // 게시글 목록 조회
     public List<Board> findBoards() {
         return boardRepository.findAll();

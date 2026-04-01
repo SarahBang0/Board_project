@@ -52,4 +52,13 @@ public class Comment {
         this.board = board;
         board.getComments().add(this);
     }
+
+    public void remove() {
+        if(this.user!=null) {
+            this.user.getComments().remove(this);
+        }
+        if(this.board!=null) {
+            this.board.getComments().remove(this);
+        }
+    }
 }

@@ -38,6 +38,19 @@ public class CommentService {
         comment.updateComment(content);
     }
 
+    // 댓글 삭제
+    @Transactional
+    public void removeComment(Long commentId) {
+        Comment comment = commentRepository.findOne(commentId);
+        comment.remove();
+        commentRepository.remove(comment);
+    }
+
+    // 댓글 조회
+    public Comment findComment(Long commentId)  {
+        return commentRepository.findOne(commentId);
+    }
+
     // 게시글 별 댓글 조회
     public List<Comment> findCommentsByBoard(Long boardId) {
         return commentRepository.findByBoard(boardId);

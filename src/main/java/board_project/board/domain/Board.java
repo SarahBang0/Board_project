@@ -27,7 +27,7 @@ public class Board {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
 
@@ -40,6 +40,12 @@ public class Board {
     public void updateBoard(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void remove() {
+        if(this.user!=null) {
+            this.user.getBoards().remove(this);
+        }
     }
 
     //==생성 메서드==//
