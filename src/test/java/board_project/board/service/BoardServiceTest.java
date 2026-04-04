@@ -51,8 +51,8 @@ class BoardServiceTest {
         em.clear();
 
         //when
-        BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto(boardId, "게시글B", "내용B");
-        boardService.updateBoard(boardUpdateDto);
+        BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto("게시글B", "내용B");
+        boardService.updateBoard(boardId, boardUpdateDto);
         em.flush();
         em.clear();
 
@@ -61,6 +61,7 @@ class BoardServiceTest {
         assertThat(findBoard.getWriterName()).isEqualTo("회원A");
         assertThat(findBoard.getTitle()).isEqualTo("게시글B");
     }
+
 
     @Test
     void 게시글_삭제_테스트() {
@@ -127,14 +128,14 @@ class BoardServiceTest {
     }
 
     private Long getBoardId(String title, String content, Long userId) {
-        BoardSaveRequestDto boardDto = new BoardSaveRequestDto(title, content, userId);
-        Long boardId = boardService.write(boardDto);
+        BoardSaveRequestDto boardDto = new BoardSaveRequestDto(title, content);
+        Long boardId = boardService.write(userId, boardDto);
         return boardId;
     }
 
     private Long getCommentId(Long userId, Long boardId) {
-        CommentSaveRequestDto commentDto = new CommentSaveRequestDto("댓글A", userId, boardId);
-        Long commentId = commentService.write(commentDto);
+        CommentSaveRequestDto commentDto = new CommentSaveRequestDto("댓글A");
+        Long commentId = commentService.write(userId, boardId, commentDto);
         return commentId;
     }
 

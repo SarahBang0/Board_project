@@ -26,14 +26,14 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public Long write(CommentSaveRequestDto dto) {
-        User user = userRepository.findOne(dto.getUserId());
+    public Long write(Long userId, Long boardId, CommentSaveRequestDto dto) {
+        User user = userRepository.findOne(userId);
         if (user == null) {
-            throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + dto.getUserId());
+            throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId);
         }
-        Board board = boardRepository.findOne(dto.getBoardId());
+        Board board = boardRepository.findOne(boardId);
         if (board == null) {
-            throw new IllegalStateException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + dto.getBoardId());
+            throw new IllegalStateException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId);
         }
         Comment comment = Comment.createComment(dto.getContent(), user, board);
         commentRepository.save(comment);
@@ -42,10 +42,10 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public void updateComment(CommentUpdateRequestDto dto) {
-        Comment comment = commentRepository.findOne(dto.getCommentId());
+    public void updateComment(Long commentId, CommentUpdateRequestDto dto) {
+        Comment comment = commentRepository.findOne(commentId);
         if (comment == null) {
-            throw new IllegalStateException("해당 댓글이 존재하지 않습니다. 댓글 Id : " + dto.getCommentId());
+            throw new IllegalStateException("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId);
         }
         comment.updateComment(dto.getContent());
     }

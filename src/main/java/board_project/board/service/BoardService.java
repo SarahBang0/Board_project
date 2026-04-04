@@ -23,10 +23,10 @@ public class BoardService {
 
     // 게시글 작성
     @Transactional
-    public Long write(BoardSaveRequestDto dto) {
-        User user = userRepository.findOne(dto.getUserId());
+    public Long write(Long userId, BoardSaveRequestDto dto) {
+        User user = userRepository.findOne(userId);
         if(user == null) {
-            throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + dto.getUserId());
+            throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId);
         }
         Board board = Board.createBoard(dto.getTitle(), dto.getContent(), user);
         boardRepository.save(board);
@@ -35,10 +35,10 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public void updateBoard(BoardUpdateRequestDto dto) {
-        Board board = boardRepository.findOne(dto.getBoardId());
+    public void updateBoard(Long boardId, BoardUpdateRequestDto dto) {
+        Board board = boardRepository.findOne(boardId);
         if(board == null) {
-            throw new IllegalStateException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + dto.getBoardId());
+            throw new IllegalStateException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId);
         }
         board.updateBoard(dto.getTitle(), dto.getContent());
     }

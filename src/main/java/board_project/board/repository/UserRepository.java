@@ -18,8 +18,8 @@ public class UserRepository {
         em.persist(user);
     }
 
-    public User findOne(Long userid) {
-        return em.find(User.class, userid);
+    public User findOne(Long userId) {
+        return em.find(User.class, userId);
     }
 
     public List<User> findAll() {

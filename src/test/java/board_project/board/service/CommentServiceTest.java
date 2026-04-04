@@ -55,8 +55,8 @@ class CommentServiceTest {
         Long commentId = getCommentId("댓글A", userId, boardId);
 
         //when
-        CommentUpdateRequestDto commentUpdateDto = new CommentUpdateRequestDto(commentId, "수정된 댓글");
-        commentService.updateComment(commentUpdateDto);
+        CommentUpdateRequestDto commentUpdateDto = new CommentUpdateRequestDto("수정된 댓글");
+        commentService.updateComment(commentId, commentUpdateDto);
         em.flush();
         em.clear();
 
@@ -146,14 +146,14 @@ class CommentServiceTest {
     }
 
     private Long getBoardId(String title, String content, Long userId) {
-        BoardSaveRequestDto boardDto = new BoardSaveRequestDto(title, content, userId);
-        Long boardId = boardService.write(boardDto);
+        BoardSaveRequestDto boardDto = new BoardSaveRequestDto(title, content);
+        Long boardId = boardService.write(userId, boardDto);
         return boardId;
     }
 
     private Long getCommentId(String content, Long userId, Long boardId) {
-        CommentSaveRequestDto commentDto = new CommentSaveRequestDto(content, userId, boardId);
-        Long commentId = commentService.write(commentDto);
+        CommentSaveRequestDto commentDto = new CommentSaveRequestDto(content);
+        Long commentId = commentService.write(userId, boardId, commentDto);
         return commentId;
     }
 
