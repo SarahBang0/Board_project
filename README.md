@@ -28,11 +28,11 @@ src/main/java/board_project/board
 │   ├── Board
 │   ├── Comment
 │   └── User
-├── Dto             
+├── dto             
 │   ├── BoardResponseDto
 │   ├── BoardSaveRequestDto
 │   ├── BoardUpdateResponseDto
-│   ├── CommentResponseDot
+│   ├── CommentResponseDto
 │   ├── CommentSaveRequestDto
 │   ├── CommentUpdateRequestDto
 │   ├── UserJoinRequestDto
