@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>게시글 상세보기</title>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+    <div class="container"><a class="navbar-brand" href="/">My Board App</a></div>
+</nav>
+
+<div class="container pb-5">
+    <div class="mx-auto bg-white p-5 shadow rounded-4" style="max-width: 900px;">
+
+        <div class="mb-4">
+            <h2 class="fw-bold mb-3" th:text="${board.title}">게시글 제목</h2>
+            <div class="d-flex justify-content-between align-items-center text-muted">
+                <span>작성자: <b class="text-dark" th:text="${board.writerName}">작성자</b></span>
+                <span>2024-05-20</span>
+            </div>
+        </div>
+        <hr class="my-4">
+
+        <div class="mb-5 py-3" style="min-height: 200px; line-height: 1.8;">
+            <p th:text="${board.content}" style="white-space: pre-wrap;">내용이 들어갑니다.</p>
+        </div>
+
+        <div class="d-flex gap-2 mb-5">
+            <a th:href="@{/boards/{id}/edit(id=${board.boardId})}" class="btn btn-warning px-4">수정하기</a>
+            <a href="/boards" class="btn btn-outline-secondary px-4">목록으로</a>
+        </div>
+
+        <hr class="my-5">
+
+        <div class="comment-section">
+            <h4 class="fw-bold mb-4">댓글 <span class="text-primary" th:text="${comments != null ? comments.size() : 0}">0</span></h4>
+
+            <div th:each="comment : ${comments}" class="mb-3 p-3 bg-light rounded-3">
+                <div class="d-flex justify-content-between mb-2">
+                    <strong th:text="${comment.writerName}">댓글작성자</strong>
+                    <small class="text-muted">2024-05-20</small>
+                </div>
+                <p class="mb-0" th:text="${comment.content}">댓글 내용입니다.</p>
+            </div>
+
+            <div class="mt-4 p-4 border rounded-4 bg-light">
+                <h5 class="fw-bold mb-3">댓글 남기기</h5>
+                <form th:action="@{/users/{userId}/boards/{boardId}/comments(userId=${userId}, boardId=${board.boardId})}" method="post">
+                    <div class="mb-3">
+                        <textarea name="content" class="form-control" rows="3" placeholder="댓글을 남겨주세요." required></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary px-4">댓글 등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
