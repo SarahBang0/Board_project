@@ -1,11 +1,14 @@
 package board_project.board.service;
 
 import board_project.board.domain.User;
+import board_project.board.dto.UserJoinRequestDto;
+import board_project.board.dto.UserResponseDto;
 import board_project.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,10 +20,10 @@ public class UserService {
 
     // 회원 가입
     @Transactional
-    public Long join(String name, String email) {
+    public Long join(UserJoinRequestDto userJoinRequestDto) {
         //중복 이메일 검증
-        validateDuplicateUser(email);
-        User user = User.createUser(name, email);
+        validateDuplicateUser(userJoinRequestDto.getEmail());
+        User user = userJoinRequestDto.toEntity();
         userRepository.save(user);
         return user.getId();
     }
@@ -33,12 +36,18 @@ public class UserService {
     }
 
     // 회원 조회
-    public User findUser(Long userId) {
-        return userRepository.findOne(userId);
+    public UserResponseDto findUser(Long userId) {
+        User user = userRepository.findOne(userId);
+        if(user == null) {
+            throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId);
+        }
+        return new UserResponseDto(user);
     }
 
     // 전체 회원 조회
-    public List<User> findUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDto> findUsers() {
+        return userRepository.findAll().stream()
+                .map(UserResponseDto::new)
+                .toList();
     }
 }

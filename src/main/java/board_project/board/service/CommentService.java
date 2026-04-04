@@ -3,6 +3,9 @@ package board_project.board.service;
 import board_project.board.domain.Board;
 import board_project.board.domain.Comment;
 import board_project.board.domain.User;
+import board_project.board.dto.CommentResponseDto;
+import board_project.board.dto.CommentSaveRequestDto;
+import board_project.board.dto.CommentUpdateRequestDto;
 import board_project.board.repository.BoardRepository;
 import board_project.board.repository.CommentRepository;
 import board_project.board.repository.UserRepository;
@@ -23,42 +26,62 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public Long write(String content, Long userId, Long boardId) {
-        User user = userRepository.findOne(userId);
-        Board board = boardRepository.findOne(boardId);
-        Comment comment = Comment.createComment(content, user, board);
+    public Long write(CommentSaveRequestDto dto) {
+        User user = userRepository.findOne(dto.getUserId());
+        if (user == null) {
+            throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + dto.getUserId());
+        }
+        Board board = boardRepository.findOne(dto.getBoardId());
+        if (board == null) {
+            throw new IllegalStateException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + dto.getBoardId());
+        }
+        Comment comment = Comment.createComment(dto.getContent(), user, board);
         commentRepository.save(comment);
         return comment.getId();
     }
 
     // 댓글 수정
     @Transactional
-    public void updateComment(Long commentId, String content) {
-        Comment comment = commentRepository.findOne(commentId);
-        comment.updateComment(content);
+    public void updateComment(CommentUpdateRequestDto dto) {
+        Comment comment = commentRepository.findOne(dto.getCommentId());
+        if (comment == null) {
+            throw new IllegalStateException("해당 댓글이 존재하지 않습니다. 댓글 Id : " + dto.getCommentId());
+        }
+        comment.updateComment(dto.getContent());
     }
 
     // 댓글 삭제
     @Transactional
     public void removeComment(Long commentId) {
         Comment comment = commentRepository.findOne(commentId);
+        if (comment == null) {
+            throw new IllegalStateException("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId);
+        }
         comment.remove();
         commentRepository.remove(comment);
     }
 
     // 댓글 조회
-    public Comment findComment(Long commentId)  {
-        return commentRepository.findOne(commentId);
+    public CommentResponseDto findComment(Long commentId) {
+        Comment comment = commentRepository.findOne(commentId);
+        if (comment == null) {
+            throw new IllegalStateException("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId);
+        }
+        return new CommentResponseDto(comment);
     }
 
     // 게시글 별 댓글 조회
-    public List<Comment> findCommentsByBoard(Long boardId) {
-        return commentRepository.findByBoard(boardId);
+    public List<CommentResponseDto> findCommentsByBoard(Long boardId) {
+        return commentRepository.findByBoard(boardId).stream()
+                .map(CommentResponseDto::new)
+                .toList();
     }
 
     // 작성자 별 댓글 조회
-    public List<Comment> findCommentsByUser(Long userId) {
-        return commentRepository.findByUser(userId);
+    public List<CommentResponseDto> findCommentsByUser(Long userId) {
+        return commentRepository.findByUser(userId).stream()
+                .map(CommentResponseDto::new)
+                .toList();
     }
 
 }
