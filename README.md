@@ -1,0 +1,15 @@
+## Spring Boot와 JPA를 활용한 게시판 서비스 프로젝트
+<img width="1136" height="645" alt="image" src="https://github.com/user-attachments/assets/e64ac6b1-4519-41b1-a8b8-d8af608cfc31" />
+
+---
+### 기술 스택
+- BackEnd : Java 17, Spring Boot 4.0.5, Spring Data JPA
+- DataBase : H2
+- FrontEnd : Thymeleaf, Bootstrap 5
+- Build Tool : Gradle
+
+--- 
+### ERD
+![image.png](attachment:1b690edd-ff71-4afb-8889-1ea844a3f008:image.png)
+
+
