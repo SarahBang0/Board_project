@@ -10,6 +10,4 @@
 
 --- 
 ### ERD
-![image.png](attachment:1b690edd-ff71-4afb-8889-1ea844a3f008:image.png)
-
-
+<img width="1180" height="556" alt="image" src="https://github.com/user-attachments/assets/5950ab01-b7f4-4cf5-bcdd-f01f6abf3054" />
