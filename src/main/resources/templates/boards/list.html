@@ -21,9 +21,10 @@
             <table class="table table-hover border-top">
                 <thead class="table-light">
                 <tr>
-                    <th style="width: 10%">#</th>
-                    <th style="width: 60%">제목</th>
-                    <th style="width: 30%">작성자</th>
+                    <th style="width: 8%">#</th>
+                    <th style="width: 55%">제목</th>
+                    <th style="width: 17%">작성자</th>
+                    <th style="width: 20%">작성일</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,6 +39,7 @@
                            class="text-decoration-none text-primary fw-semibold">제목</a>
                     </td>
                     <td th:text="${board.writerName}">작성자</td>
+                    <td th:text="${board.createdDate}">작성일</td>
                 </tr>
                 </tbody>
             </table>

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,7 +36,7 @@ public class CommentService {
         if (board == null) {
             throw new IllegalStateException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId);
         }
-        Comment comment = Comment.createComment(dto.getContent(), user, board);
+        Comment comment = Comment.createComment(dto.getContent(), user, board, LocalDateTime.now());
         commentRepository.save(comment);
         return comment.getId();
     }
@@ -47,7 +48,7 @@ public class CommentService {
         if (comment == null) {
             throw new IllegalStateException("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId);
         }
-        comment.updateComment(dto.getContent());
+        comment.updateComment(dto.getContent(), LocalDateTime.now());
     }
 
     // 댓글 삭제

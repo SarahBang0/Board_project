@@ -16,8 +16,13 @@
         <div class="mb-4">
             <h2 class="fw-bold mb-3" th:text="${board.title}">게시글 제목</h2>
             <div class="d-flex justify-content-between align-items-center text-muted">
-                <span>작성자: <b class="text-dark" th:text="${board.writerName}">작성자</b></span>
-                <span>2024-05-20</span>
+                <span>작성자:
+                        <a th:href="@{/users/{userId}(userId=${board.userId})}"
+                           class="text-primary fw-bold text-decoration-none">
+                           <span th:text="${board.writerName}">작성자 이름</span>
+                        </a>
+                    </span>
+                <span><b class="text-dark" th:text="${board.createdDateTime}">작성일자</b></span>
             </div>
         </div>
         <hr class="my-4">
@@ -28,6 +33,10 @@
 
         <div class="d-flex gap-2 mb-5">
             <a th:href="@{/boards/{id}/edit(id=${board.boardId})}" class="btn btn-warning px-4">수정하기</a>
+            <form th:action="@{/boards/{id}/delete(id=${board.boardId})}" method="post"
+                  onsubmit="return confirm('게시글을 삭제하시겠습니까? (댓글도 함께 삭제될 수 있습니다)');" style="display:inline;">
+                <button type="submit" class="btn btn-danger px-4">삭제하기</button>
+            </form>
             <a href="/boards" class="btn btn-outline-secondary px-4">목록으로</a>
         </div>
 
@@ -38,8 +47,20 @@
 
             <div th:each="comment : ${comments}" class="mb-3 p-3 bg-light rounded-3">
                 <div class="d-flex justify-content-between mb-2">
-                    <strong th:text="${comment.writerName}">댓글작성자</strong>
-                    <small class="text-muted">2024-05-20</small>
+                    <div>
+                        <strong th:text="${comment.writerName}">댓글작성자</strong>
+                        <small th:text="${comment.createdDateTime}" class="text-muted ms-2"></small>
+                    </div>
+
+                    <div class="d-flex gap-1">
+                        <a th:href="@{/boards/{boardId}/comments/{commentId}/edit(boardId=${board.boardId}, commentId=${comment.commentId})}"
+                           class="btn btn-sm btn-outline-primary">수정</a>
+
+                        <form th:action="@{/boards/{boardId}/comments/{commentId}/delete(boardId=${board.boardId}, commentId=${comment.commentId})}"
+                              method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');" class="m-0">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                        </form>
+                    </div>
                 </div>
                 <p class="mb-0" th:text="${comment.content}">댓글 내용입니다.</p>
             </div>

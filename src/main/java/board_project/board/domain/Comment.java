@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Table(name = "COMMENTS")
@@ -26,10 +28,13 @@ public class Comment {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    private LocalDateTime createAt;
+
     //==생성 메서드==//
-    public static Comment createComment(String content, User user, Board board) {
+    public static Comment createComment(String content, User user, Board board, LocalDateTime createAt) {
         Comment comment = new Comment();
         comment.content = content;
+        comment.createAt = createAt;
 
         comment.confirmUser(user);
         comment.confirmBoard(board);
@@ -38,8 +43,9 @@ public class Comment {
     }
 
     //==수정 메서드==//
-    public void updateComment(String content) {
+    public void updateComment(String content, LocalDateTime updateAt) {
         this.content = content;
+        this.createAt = updateAt;
     }
 
     //==연관관계 메서드==//

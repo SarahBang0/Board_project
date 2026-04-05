@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,7 +29,7 @@ public class BoardService {
         if(user == null) {
             throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId);
         }
-        Board board = Board.createBoard(dto.getTitle(), dto.getContent(), user);
+        Board board = Board.createBoard(dto.getTitle(), dto.getContent(), user, LocalDateTime.now());
         boardRepository.save(board);
         return board.getId();
     }

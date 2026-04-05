@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>회원 프로필</title>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+    <div class="container"><a class="navbar-brand" href="/">My Board App</a></div>
+</nav>
+
+<div class="container pb-5">
+    <div class="mx-auto bg-white p-5 shadow rounded-4 mb-4" style="max-width: 900px;">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; font-size: 24px;">
+                <span th:text="${#strings.substring(user.name, 0, 1)}">U</span>
+            </div>
+            <div>
+                <h2 class="fw-bold m-0" th:text="${user.name}">사용자 이름</h2>
+                <p class="text-muted m-0" th:text="${user.email}">user@example.com</p>
+                <p class="text-muted m-0" th:text="${user.joinedDate}">2026-04-05</p>
+
+            </div>
+        </div>
+        <div class="text-end">
+            <a href="/users" class="btn btn-outline-secondary btn-sm">회원 목록으로</a>
+        </div>
+    </div>
+
+    <div class="mx-auto bg-white p-5 shadow rounded-4" style="max-width: 900px;">
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold" id="boards-tab" data-bs-toggle="tab" data-bs-target="#boards-pane" type="button" role="tab">작성한 글</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-pane" type="button" role="tab">작성한 댓글</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="boards-pane" role="tabpanel" tabindex="0">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 15%">#</th>
+                        <th style="width: 60%">제목</th>
+                        <th style="width: 25%">작성일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="board : ${boards}">
+                        <td th:text="${board.boardId}">1</td>
+                        <td><a th:href="@{/boards/{id}(id=${board.boardId})}" th:text="${board.title}" class="text-decoration-none text-dark">제목</a></td>
+                        <td th:text="${board.createdDate}" class="text-muted small">2026-04-05</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(boards)}"><td colspan="3" class="text-center py-4 text-muted">작성한 글이 없습니다.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="comments-pane" role="tabpanel" tabindex="0">
+                <div th:each="comment : ${comments}" class="border-bottom py-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <a th:href="@{/boards/{id}(id=${comment.boardId})}" class="text-primary small text-decoration-none fw-bold">원문 보기 →</a>
+                        <small class="text-muted" th:text="${comment.createdDateTime}">2026-04-05</small>
+                    </div>
+                    <p class="mb-0 text-dark" th:text="${comment.content}">댓글 내용입니다.</p>
+                </div>
+                <div th:if="${#lists.isEmpty(comments)}" class="text-center py-4 text-muted">작성한 댓글이 없습니다.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -2,6 +2,8 @@ package board_project.board.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BoardTest {
@@ -49,12 +51,12 @@ public class BoardTest {
     }
 
     private static User getUser() {
-        User user = User.createUser("스프링","spring@gmail.com");
+        User user = User.createUser("스프링","spring@gmail.com", LocalDateTime.now());
         return user;
     }
 
     private static Board getBoard(String title, User user) {
-        Board board = Board.createBoard(title, "내용 ", user);
+        Board board = Board.createBoard(title, "내용 ", user, LocalDateTime.now());
         return board;
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
-    private final CommentService  commentService;
+    private final CommentService commentService;
 
     // 목록 보기
     @GetMapping("/boards")
@@ -65,5 +65,12 @@ public class BoardController {
     public String getEdit(@PathVariable Long boardId, BoardUpdateRequestDto dto) {
         boardService.updateBoard(boardId, dto);
         return "redirect:/boards/" + boardId;
+    }
+
+    // 글 삭제
+    @PostMapping("/boards/{boardId}/delete")
+    public String delete(@PathVariable Long boardId) {
+        boardService.removeBoard(boardId);
+        return "redirect:/boards";
     }
 }

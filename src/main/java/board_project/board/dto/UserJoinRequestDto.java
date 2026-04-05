@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -17,6 +19,6 @@ public class UserJoinRequestDto {
     private String email;
 
     public User toEntity() {
-        return User.createUser(name, email);
+        return User.createUser(name, email, LocalDateTime.now());
     }
 }

@@ -2,6 +2,8 @@ package board_project.board.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.*;
 
 class CommentTest {
@@ -46,7 +48,7 @@ class CommentTest {
         Comment comment = getComment("댓글", user, board);
 
         //when
-        comment.updateComment("수정된 댓글");
+        comment.updateComment("수정된 댓글", LocalDateTime.now());
 
         //then
         assertThat(comment.getContent()).isEqualTo("수정된 댓글");
@@ -56,17 +58,17 @@ class CommentTest {
 
 
     private static User getUser() {
-        User user = User.createUser("스프링","spring@gmail.com");
+        User user = User.createUser("스프링","spring@gmail.com", LocalDateTime.now());
         return user;
     }
 
     private static Board getBoard(User user) {
-        Board board = Board.createBoard("첫 게시글", "내용 ", user);
+        Board board = Board.createBoard("첫 게시글", "내용 ", user, LocalDateTime.now());
         return board;
     }
 
     private static Comment getComment(String content,User user, Board board) {
-        Comment comment = Comment.createComment(content, user, board);
+        Comment comment = Comment.createComment(content, user, board, LocalDateTime.now());
         return comment;
     }
 

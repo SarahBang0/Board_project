@@ -1,11 +1,11 @@
 package board_project.board.domain;
 
-import board_project.board.BoardApplication;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +20,7 @@ public class User {
     private Long id;
     private String name;
     private String email;
+    private LocalDateTime joinedDate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Board> boards = new ArrayList<>();
@@ -28,10 +29,11 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     //==생성 메서드==//
-    public static User createUser(String name, String email) {
+    public static User createUser(String name, String email, LocalDateTime joinedDate) {
         User user = new User();
         user.name = name;
         user.email = email;
+        user.joinedDate = joinedDate;
         return user;
     }
 
