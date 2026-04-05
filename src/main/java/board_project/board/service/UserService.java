@@ -3,6 +3,8 @@ package board_project.board.service;
 import board_project.board.domain.User;
 import board_project.board.dto.UserJoinRequestDto;
 import board_project.board.dto.UserResponseDto;
+import board_project.board.exception.DuplicateResourceException;
+import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,16 +33,14 @@ public class UserService {
     // 중복 이메일 검증 로직
     private void validateDuplicateUser(String email) {
         if(!userRepository.findByEmail(email).isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 이메일입니다.");
+            throw new DuplicateResourceException("이미 존재하는 이메일입니다.");
         }
     }
 
     // 회원 조회
     public UserResponseDto findUser(Long userId) {
-        User user = userRepository.findOne(userId);
-        if(user == null) {
-            throw new IllegalStateException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId);
-        }
+        User user = userRepository.findOne(userId).orElseThrow(
+                ()->new ResourceNotFoundException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
         return new UserResponseDto(user);
     }
 

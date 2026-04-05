@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class CommentRepository {
         em.remove(comment);
     }
 
-    public Comment findOne(Long commentId) {
-        return em.find(Comment.class, commentId);
+    public Optional<Comment> findOne(Long commentId) {
+        return Optional.ofNullable(em.find(Comment.class, commentId));
     }
 
     public List<Comment> findAll() {

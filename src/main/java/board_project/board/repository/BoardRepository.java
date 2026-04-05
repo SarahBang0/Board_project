@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,8 +18,8 @@ public class BoardRepository {
         em.persist(board);
     }
 
-    public Board findOne(Long boardId) {
-        return em.find(Board.class, boardId);
+    public Optional<Board> findOne(Long boardId) {
+        return Optional.ofNullable(em.find(Board.class, boardId));
     }
 
     public List<Board> findAll() {
