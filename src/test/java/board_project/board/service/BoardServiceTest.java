@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,11 +26,14 @@ class BoardServiceTest {
     @Autowired BoardService boardService;
     @Autowired CommentService commentService;
     @Autowired EntityManager em;
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
+
 
     @Test
     void 게시글_작성_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
 
         //when
         Long boardId = getBoardId("게시글A", "내용A", userId);
@@ -46,7 +50,7 @@ class BoardServiceTest {
     @Test
     void 게시글_수정_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId = getBoardId("게시글A", "내용A", userId);
         em.flush();
         em.clear();
@@ -67,7 +71,7 @@ class BoardServiceTest {
     @Test
     void 게시글_삭제_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId = getBoardId("게시글A", "내용A", userId);
         Long commentId = getCommentId(userId, boardId);
 
@@ -90,7 +94,7 @@ class BoardServiceTest {
     @Test
     void 작성자별_게시글_조회_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId1 = getBoardId("게시글A", "내용A", userId);
         Long boardId2 = getBoardId("게시글B", "내용B", userId);
         em.flush();
@@ -107,7 +111,7 @@ class BoardServiceTest {
     @Test
     void 게시글_전체_조회_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId1 = getBoardId("게시글A", "내용A", userId);
         Long boardId2 = getBoardId("게시글B", "내용B", userId);
         em.flush();
@@ -122,8 +126,8 @@ class BoardServiceTest {
     }
 
 
-    private Long getUserId(String name, String email) {
-        UserJoinRequestDto userDto1 = new UserJoinRequestDto(name, email);
+    private Long getUserId(String name, String email, String password) {
+        UserJoinRequestDto userDto1 = new UserJoinRequestDto(name, email, password);
         Long userId = userService.join(userDto1);
         return userId;
     }

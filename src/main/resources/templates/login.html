@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>로그인</title>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+    <div class="container"><a class="navbar-brand" href="/">My Board App</a></div>
+</nav>
+
+<div class="container">
+    <div class="mx-auto bg-white p-5 shadow rounded-4" style="max-width: 500px;">
+        <h2 class="mb-4 fw-bold">로그인</h2>
+
+        <div th:if="${param.error}" class="alert alert-danger mb-4" role="alert">
+            이메일 또는 비밀번호가 올바르지 않습니다.
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-info mb-4" role="alert">
+            성공적으로 로그아웃되었습니다.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">이메일</label>
+                <input type="email" name="username" class="form-control form-control-lg"
+                       placeholder="example@gmail.com" required autofocus>
+            </div>
+            <div class="mb-5">
+                <label class="form-label fw-semibold">비밀번호</label>
+                <input type="password" name="password" class="form-control form-control-lg"
+                       placeholder="비밀번호를 입력하세요" required>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">로그인</button>
+                <div class="text-center mt-3">
+                    <span class="text-secondary small">계정이 없으신가요?</span>
+                    <a href="/users/join" class="btn btn-link btn-sm text-primary p-0 ms-1">회원가입</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

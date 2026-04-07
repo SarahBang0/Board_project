@@ -9,7 +9,7 @@ spring:
   jpa:
     hibernate:
       # 시작할 때 테이블을 자동으로 생성 (연습할 때 매우 편함)
-#      ddl-auto: create
+      ddl-auto: create
     properties:
       hibernate:
         # SQL을 콘솔창에 예쁘게 출력

@@ -27,9 +27,11 @@ public class UserRepository {
         return em.createQuery("select u from User u", User.class).getResultList();
     }
 
-    public List<User> findByEmail(String email) {
-        return em.createQuery("select u from User u where u.email = :email", User.class)
+    public Optional<User> findByEmail(String email) {
+        List<User> users = em.createQuery("select u from User u where u.email = :email", User.class)
                 .setParameter("email", email)
-                .getResultList();
+                .getResultList(); // Stream 대신 List로 확실히 받아오기
+
+        return users.stream().findFirst(); // 리스트에서 첫 번째를 Optional로 반환
     }
 }

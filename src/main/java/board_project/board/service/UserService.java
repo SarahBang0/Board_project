@@ -8,9 +8,11 @@ import board_project.board.exception.ErrorCode;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +22,18 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     // 회원 가입
     @Transactional
-    public Long join(UserJoinRequestDto userJoinRequestDto) {
+    public Long join(UserJoinRequestDto dto) {
         //중복 이메일 검증
-        validateDuplicateUser(userJoinRequestDto.getEmail());
-        User user = userJoinRequestDto.toEntity();
+        validateDuplicateUser(dto.getEmail());
+
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+
+        User user = User.createUser(dto.getName(), dto.getEmail(), encodedPassword, LocalDateTime.now());
         userRepository.save(user);
         return user.getId();
     }

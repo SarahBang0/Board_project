@@ -51,7 +51,7 @@ public class BoardTest {
     }
 
     private static User getUser() {
-        User user = User.createUser("스프링","spring@gmail.com", LocalDateTime.now());
+        User user = User.createUser("스프링","spring@gmail.com", "1234", LocalDateTime.now());
         return user;
     }
 

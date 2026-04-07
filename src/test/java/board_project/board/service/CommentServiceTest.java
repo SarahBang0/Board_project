@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,11 +30,14 @@ class CommentServiceTest {
     @Autowired BoardRepository boardRepository;
     @Autowired CommentService commentService;
     @Autowired EntityManager em;
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
+
 
     @Test
     void 댓글_작성_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId = getBoardId("게시글A", "내용A", userId);
 
         //when
@@ -51,7 +55,7 @@ class CommentServiceTest {
     @Test
     void 댓글_수정_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId = getBoardId("게시글A", "내용A", userId);
         Long commentId = getCommentId("댓글A", userId, boardId);
 
@@ -73,7 +77,7 @@ class CommentServiceTest {
     @Test
     void 댓글_삭제_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId = getBoardId("게시글A", "내용A", userId);
         Long commentId = getCommentId("댓글A", userId, boardId);
 
@@ -97,7 +101,7 @@ class CommentServiceTest {
     @Test
     void 게시물별_댓글_조회_테스트() {
         //given
-        Long userId = getUserId("회원A", "spring@gmail.com");
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
         Long boardId1 = getBoardId("게시글A", "내용A", userId);
         Long boardId2 = getBoardId("게시글B", "내용B", userId);
         Long commentId1 = getCommentId("댓글A", userId, boardId1);
@@ -119,8 +123,8 @@ class CommentServiceTest {
     @Test
     void 작성자별_댓글_조회_테스트() {
         //given
-        Long userId1 = getUserId("회원A", "spring@gmail.com");
-        Long userId2 = getUserId("회원B", "jpa@gmail.com");
+        Long userId1 = getUserId("회원A", "spring@gmail.com", "1234");
+        Long userId2 = getUserId("회원B", "jpa@gmail.com", "1234");
         Long boardId1 = getBoardId("게시글A", "내용A", userId1);
         Long boardId2 = getBoardId("게시글B", "내용B", userId2);
         getCommentId("댓글A", userId1, boardId1);
@@ -140,8 +144,8 @@ class CommentServiceTest {
 
 
 
-    private Long getUserId(String name, String email) {
-        UserJoinRequestDto userDto1 = new UserJoinRequestDto(name, email);
+    private Long getUserId(String name, String email, String password) {
+        UserJoinRequestDto userDto1 = new UserJoinRequestDto(name, email, password);
         Long userId = userService.join(userDto1);
         return userId;
     }

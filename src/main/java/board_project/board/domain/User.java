@@ -19,7 +19,11 @@ public class User {
     @Column(name = "user_id")
     private Long id;
     private String name;
+    @Column(unique = true)
     private String email;
+
+    private String password;
+
     private LocalDateTime joinedDate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -29,10 +33,11 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     //==생성 메서드==//
-    public static User createUser(String name, String email, LocalDateTime joinedDate) {
+    public static User createUser(String name, String email, String password, LocalDateTime joinedDate) {
         User user = new User();
         user.name = name;
         user.email = email;
+        user.password = password;
         user.joinedDate = joinedDate;
         return user;
     }
