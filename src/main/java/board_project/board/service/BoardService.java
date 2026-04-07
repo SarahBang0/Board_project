@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +27,11 @@ public class BoardService {
 
     // 게시글 작성
     @Transactional
-    public Long write(Long userId, BoardSaveRequestDto dto) {
-        User user = userRepository.findOne(userId).orElseThrow(
+    public Long write(String email, BoardSaveRequestDto dto) {
+        User user = userRepository.findByEmail(email).orElseThrow(
                 ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
+                        "해당 회원이 존재하지 않습니다. 회원 email: " + email));
+
         Board board = Board.createBoard(dto.getTitle(), dto.getContent(), user, LocalDateTime.now());
         boardRepository.save(board);
         return board.getId();

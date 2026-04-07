@@ -10,6 +10,8 @@ import board_project.board.service.CommentService;
 import board_project.board.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,5 +65,14 @@ public class UserController {
         model.addAttribute("boards", boardsByUser);
         model.addAttribute("comments", commentsByUser);
         return "users/detail";
+    }
+
+    // 마이페이지
+    @GetMapping("/my-page")
+    public String myPage(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        UserResponseDto user = userService.findByEmail(email);
+        Long userId = user.getUserId();
+        return "redirect:/users/" + userId;
     }
 }

@@ -3,6 +3,7 @@ package board_project.board.apiController;
 import board_project.board.dto.BoardResponseDto;
 import board_project.board.dto.BoardSaveRequestDto;
 import board_project.board.dto.BoardUpdateRequestDto;
+import board_project.board.dto.UserResponseDto;
 import board_project.board.service.BoardService;
 import board_project.board.service.UserService;
 import jakarta.validation.Valid;
@@ -21,7 +22,8 @@ public class BoardApiController {
     // 게시글 작성
     @PostMapping("/api/users/{userId}/boards")
     public Long write(@PathVariable Long userId, @RequestBody @Valid BoardSaveRequestDto dto) {
-        return boardService.write(userId, dto);
+        UserResponseDto user = userService.findUser(userId);
+        return boardService.write(user.getEmail(), dto);
     }
 
     // 게시글 수정

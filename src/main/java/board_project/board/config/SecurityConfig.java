@@ -23,13 +23,22 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // API 테스트를 위해 CSRF는 잠시 끕니다.
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/join", "/login", "/users", "/css/**", "/js/**").permitAll() // 회원가입은 누구나 가능
+                        .requestMatchers("/users/join", "/login", "/", "/users", "/css/**", "/js/**").permitAll() // 회원가입은 누구나 가능
                         .anyRequest().authenticated() // 나머지는 로그인해야 접근 가능
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // 로그인 페이지 경로 (나중에 뷰 만들 곳)
-                        .defaultSuccessUrl("/boards") // 로그인 성공 시 이동할 곳
+                        .loginPage("/login")
+                        .usernameParameter("email") // ⭐ HTML의 input name과 일치시켜야 함
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/boards")
                         .permitAll()
+                )
+                // --- 여기부터 로그아웃 설정 추가 ---
+                .logout(logout -> logout
+                        .logoutUrl("/logout")            // 로그아웃을 처리할 URL (기본값도 /logout 이라 생략 가능)
+                        .logoutSuccessUrl("/login")      // 로그아웃 성공 시 이동할 페이지
+                        .invalidateHttpSession(true)     // 로그아웃 시 세션 삭제
+                        .deleteCookies("JSESSIONID")     // 자동 로그인 쿠키 등 삭제
                 );
 
         return http.build();

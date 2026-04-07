@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -59,5 +60,13 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(UserResponseDto::new)
                 .toList();
+    }
+
+    // 이메일로 회원 조회
+    public UserResponseDto findByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
+                        "해당 회원이 존재하지 않습니다. 회원 email: " + email));
+        return new UserResponseDto(user);
     }
 }

@@ -7,6 +7,8 @@ import board_project.board.service.BoardService;
 import board_project.board.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +40,9 @@ public class BoardController {
 
     // 글 작성 폼
     @PostMapping("/boards")
-    public String create(Long userId, @Valid BoardSaveRequestDto dto) {
-        Long boardId = boardService.write(userId, dto);
+    public String create(@AuthenticationPrincipal UserDetails userDetails, @Valid BoardSaveRequestDto dto) {
+        String email = userDetails.getUsername();
+        Long boardId = boardService.write(email, dto);
         return "redirect:/boards/" + boardId;
     }
 
