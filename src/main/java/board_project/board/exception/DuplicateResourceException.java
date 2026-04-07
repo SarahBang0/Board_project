@@ -1,7 +1,12 @@
 package board_project.board.exception;
 
-public class DuplicateResourceException extends RuntimeException {
-    public DuplicateResourceException(String message) {
-        super(message);
+public class DuplicateResourceException extends BusinessException {
+
+    public DuplicateResourceException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+
+    public DuplicateResourceException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 }

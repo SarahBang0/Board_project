@@ -5,6 +5,7 @@ import board_project.board.dto.BoardSaveRequestDto;
 import board_project.board.dto.BoardUpdateRequestDto;
 import board_project.board.service.BoardService;
 import board_project.board.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +38,7 @@ public class BoardController {
 
     // 글 작성 폼
     @PostMapping("/boards")
-    public String create(Long userId, BoardSaveRequestDto dto) {
+    public String create(Long userId, @Valid BoardSaveRequestDto dto) {
         Long boardId = boardService.write(userId, dto);
         return "redirect:/boards/" + boardId;
     }
@@ -62,7 +63,7 @@ public class BoardController {
 
     // 글 수정
     @PostMapping("/boards/{boardId}")
-    public String getEdit(@PathVariable Long boardId, BoardUpdateRequestDto dto) {
+    public String getEdit(@PathVariable Long boardId, @Valid BoardUpdateRequestDto dto) {
         boardService.updateBoard(boardId, dto);
         return "redirect:/boards/" + boardId;
     }

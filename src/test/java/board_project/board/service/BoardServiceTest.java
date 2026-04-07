@@ -2,6 +2,7 @@ package board_project.board.service;
 
 import board_project.board.domain.Board;
 import board_project.board.dto.*;
+import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
@@ -76,13 +77,13 @@ class BoardServiceTest {
         em.clear();
 
         //then
-        IllegalStateException e1 = assertThrows(IllegalStateException.class,
+        ResourceNotFoundException e1 = assertThrows(ResourceNotFoundException.class,
                 ()->boardService.findBoard(boardId));
         assertThat(e1.getMessage()).isEqualTo("해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId);
-        IllegalStateException e2 = assertThrows(IllegalStateException.class,
+        ResourceNotFoundException e2 = assertThrows(ResourceNotFoundException.class,
                 () -> commentService.findComment(commentId));
         assertThat(e2.getMessage()).isEqualTo("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId);
-        assertThat(userRepository.findOne(userId).getBoards().size()).isEqualTo(0);
+        assertThat(userRepository.findOne(userId).orElseThrow().getBoards().size()).isEqualTo(0);
     }
 
 

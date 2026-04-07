@@ -8,6 +8,7 @@ import board_project.board.dto.UserResponseDto;
 import board_project.board.service.BoardService;
 import board_project.board.service.CommentService;
 import board_project.board.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +34,7 @@ public class UserController {
 
     // 회원 가입
     @PostMapping("/users")
-    public String join(UserJoinRequestDto dto) {
+    public String join(@Valid UserJoinRequestDto dto) {
         userService.join(dto);
         return "redirect:/users";
     }

@@ -6,6 +6,7 @@ import board_project.board.domain.User;
 import board_project.board.dto.CommentResponseDto;
 import board_project.board.dto.CommentSaveRequestDto;
 import board_project.board.dto.CommentUpdateRequestDto;
+import board_project.board.exception.ErrorCode;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.BoardRepository;
 import board_project.board.repository.CommentRepository;
@@ -30,9 +31,11 @@ public class CommentService {
     @Transactional
     public Long write(Long userId, Long boardId, CommentSaveRequestDto dto) {
         User user = userRepository.findOne(userId).orElseThrow(
-                ()->new ResourceNotFoundException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
+                ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
+                        "해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
         Board board = boardRepository.findOne(boardId).orElseThrow(
-                ()->new ResourceNotFoundException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId));
+                ()->new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND,
+                        "해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId));
         Comment comment = Comment.createComment(dto.getContent(), user, board, LocalDateTime.now());
         commentRepository.save(comment);
         return comment.getId();
@@ -80,7 +83,8 @@ public class CommentService {
 
     private Comment findCommentOrThrow(Long commentId) {
         Comment comment = commentRepository.findOne(commentId).orElseThrow(
-                ()-> new ResourceNotFoundException("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId));
+                ()-> new ResourceNotFoundException(ErrorCode.COMMENT_NOT_FOUND,
+                        "해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId));
         return comment;
     }
 

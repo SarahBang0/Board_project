@@ -6,6 +6,7 @@ import board_project.board.dto.CommentSaveRequestDto;
 import board_project.board.dto.CommentUpdateRequestDto;
 import board_project.board.service.BoardService;
 import board_project.board.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +24,7 @@ public class CommentController {
     @PostMapping("/users/{userId}/boards/{boardId}/comments")
     public String addComment(@PathVariable Long userId,
                              @PathVariable Long boardId,
-                             CommentSaveRequestDto dto) {
+                             @Valid CommentSaveRequestDto dto) {
         Long commentId = commentService.write(userId, boardId, dto);
         return "redirect:/boards/" + boardId;
     }

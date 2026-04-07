@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardUpdateRequestDto {
-    @NotBlank
+    @NotBlank(message = "제목은 필수 입력값입니다.")
     private String title;
-    @NotBlank
+    @NotBlank(message = "내용은 필수 입력값입니다.")
     private String content;
 }

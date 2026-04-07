@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentSaveRequestDto {
-    @NotBlank
+    @NotBlank(message = "댓글 내용은 필수 입력값입니다.")
     private String content;
 }

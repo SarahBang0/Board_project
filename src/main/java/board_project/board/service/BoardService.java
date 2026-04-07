@@ -5,6 +5,7 @@ import board_project.board.domain.User;
 import board_project.board.dto.BoardResponseDto;
 import board_project.board.dto.BoardSaveRequestDto;
 import board_project.board.dto.BoardUpdateRequestDto;
+import board_project.board.exception.ErrorCode;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.BoardRepository;
 import board_project.board.repository.UserRepository;
@@ -27,7 +28,8 @@ public class BoardService {
     @Transactional
     public Long write(Long userId, BoardSaveRequestDto dto) {
         User user = userRepository.findOne(userId).orElseThrow(
-                ()->new ResourceNotFoundException("해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
+                ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
+                        "해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
         Board board = Board.createBoard(dto.getTitle(), dto.getContent(), user, LocalDateTime.now());
         boardRepository.save(board);
         return board.getId();
@@ -70,7 +72,8 @@ public class BoardService {
 
     private Board findBoardOrThrow(Long boardId) {
         Board board = boardRepository.findOne(boardId).orElseThrow(
-                ()->new ResourceNotFoundException("해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId));
+                ()->new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND,
+                        "해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId));
         return board;
     }
 

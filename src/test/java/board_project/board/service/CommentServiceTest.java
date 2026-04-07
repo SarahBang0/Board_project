@@ -4,6 +4,7 @@ import board_project.board.domain.Board;
 import board_project.board.domain.Comment;
 import board_project.board.domain.User;
 import board_project.board.dto.*;
+import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.BoardRepository;
 import board_project.board.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -82,10 +83,10 @@ class CommentServiceTest {
 //        em.clear();
 
         //then
-        IllegalStateException e = assertThrows(IllegalStateException.class,
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class,
                 ()->commentService.findComment(commentId));
-        User findUser = userRepository.findOne(userId);
-        Board findBoard = boardRepository.findOne(boardId);
+        User findUser = userRepository.findOne(userId).orElseThrow();
+        Board findBoard = boardRepository.findOne(boardId).orElseThrow();
 
         assertThat(e.getMessage()).isEqualTo("해당 댓글이 존재하지 않습니다. 댓글 Id : "+commentId);
         assertThat(findUser.getComments().size()).isEqualTo(0);

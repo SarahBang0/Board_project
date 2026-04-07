@@ -1,7 +1,13 @@
 package board_project.board.exception;
 
-public class ResourceNotFoundException extends RuntimeException{
-    public ResourceNotFoundException(String message) {
-        super(message);
+public class ResourceNotFoundException extends BusinessException {
+
+    public ResourceNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+
+    public ResourceNotFoundException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 }
+
