@@ -3,14 +3,13 @@ package board_project.board.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class ApiGlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
@@ -22,11 +21,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentValid (MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;
-        ErrorResponse errorResponse = ErrorResponse.of(errorCode, message);
-        log.error("[{}] {} : {}", e.getClass().getSimpleName(), errorCode.getCode(), message);
+        ErrorResponse errorResponse = ErrorResponse.of(errorCode, errorMessage);
+        log.error("[{}] {} : {}", e.getClass().getSimpleName(), errorCode.getCode(), errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+
 
 }

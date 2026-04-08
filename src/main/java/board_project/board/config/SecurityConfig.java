@@ -41,6 +41,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login")      // 로그아웃 성공 시 이동할 페이지
                         .invalidateHttpSession(true)     // 로그아웃 시 세션 삭제
                         .deleteCookies("JSESSIONID")     // 자동 로그인 쿠키 등 삭제
+                )
+                .exceptionHandling(conf -> conf
+                        .accessDeniedPage("/error-403") // 에러 발생 시 이 경로(URL)로 가라!
                 );
 
         return http.build();
