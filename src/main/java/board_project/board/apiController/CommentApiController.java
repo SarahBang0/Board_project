@@ -8,6 +8,8 @@ import board_project.board.service.CommentService;
 import board_project.board.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +32,9 @@ public class CommentApiController {
     // 댓글 수정
     @PatchMapping("/api/comments/{commentId}")
     public CommentResponseDto update(@PathVariable Long commentId,
-                                     @RequestBody @Valid CommentUpdateRequestDto dto) {
-        commentService.updateComment(commentId, dto);
+                                     @RequestBody @Valid CommentUpdateRequestDto dto,
+                                     @AuthenticationPrincipal UserDetails userDetails) {
+        commentService.updateComment(commentId, dto, userDetails.getUsername());
         return commentService.findComment(commentId);
     }
 
@@ -55,7 +58,8 @@ public class CommentApiController {
 
     // 댓글 삭제
     @DeleteMapping("/api/comments/{commentId}")
-    public void remove(@PathVariable Long commentId) {
-        commentService.removeComment(commentId);
+    public void remove(@PathVariable Long commentId,
+                       @AuthenticationPrincipal UserDetails userDetails) {
+        commentService.removeComment(commentId, userDetails.getUsername());
     }
 }

@@ -67,15 +67,17 @@ public class BoardController {
 
     // 글 수정
     @PostMapping("/boards/{boardId}")
-    public String getEdit(@PathVariable Long boardId, @Valid BoardUpdateRequestDto dto) {
-        boardService.updateBoard(boardId, dto);
+    public String getEdit(@PathVariable Long boardId, @Valid BoardUpdateRequestDto dto,
+                          @AuthenticationPrincipal UserDetails userDetails) {
+        boardService.updateBoard(boardId, dto, userDetails.getUsername());
         return "redirect:/boards/" + boardId;
     }
 
     // 글 삭제
     @PostMapping("/boards/{boardId}/delete")
-    public String delete(@PathVariable Long boardId) {
-        boardService.removeBoard(boardId);
+    public String delete(@PathVariable Long boardId,
+                         @AuthenticationPrincipal UserDetails userDetails) {
+        boardService.removeBoard(boardId, userDetails.getUsername());
         return "redirect:/boards";
     }
 }

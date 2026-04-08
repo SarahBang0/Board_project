@@ -46,8 +46,9 @@ public class CommentController {
     @PostMapping("/boards/{boardId}/comments/{commentId}/edit")
     public String update(@PathVariable Long boardId,
                          @PathVariable Long commentId,
-                         CommentUpdateRequestDto dto) {
-        commentService.updateComment(commentId, dto);
+                         CommentUpdateRequestDto dto,
+                         @AuthenticationPrincipal UserDetails userDetails) {
+        commentService.updateComment(commentId, dto, userDetails.getUsername());
         return "redirect:/boards/" + boardId;
 
     }
@@ -55,8 +56,9 @@ public class CommentController {
     // 댓글 삭제
     @PostMapping("/boards/{boardId}/comments/{commentId}/delete")
     public String remove(@PathVariable Long boardId,
-                         @PathVariable Long commentId) {
-        commentService.removeComment(commentId);
+                         @PathVariable Long commentId,
+                         @AuthenticationPrincipal UserDetails userDetails) {
+        commentService.removeComment(commentId, userDetails.getUsername());
         return "redirect:/boards/"+ boardId;
     }
 }

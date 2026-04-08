@@ -2,6 +2,7 @@ package board_project.board.service;
 
 import board_project.board.domain.Board;
 import board_project.board.dto.*;
+import board_project.board.exception.AccessDeniedException;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -57,7 +58,7 @@ class BoardServiceTest {
 
         //when
         BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto("게시글B", "내용B");
-        boardService.updateBoard(boardId, boardUpdateDto);
+        boardService.updateBoard(boardId, boardUpdateDto, "spring@gmail.com");
         em.flush();
         em.clear();
 
@@ -65,6 +66,24 @@ class BoardServiceTest {
         BoardResponseDto findBoard = boardService.findBoard(boardId);
         assertThat(findBoard.getWriterName()).isEqualTo("회원A");
         assertThat(findBoard.getTitle()).isEqualTo("게시글B");
+    }
+
+    @Test
+    void 권한_없는_게시글_수정_에러_테스트() {
+        //given
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
+        Long boardId = getBoardId("게시글A", "내용A", userId);
+        em.flush();
+        em.clear();
+
+        //when
+        BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto("게시글B", "내용B");
+
+        AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                ()-> boardService.updateBoard(boardId, boardUpdateDto, "java@gmail.com"));
+
+        //then
+        assertThat(e.getMessage()).isEqualTo("해당 게시글의 수정 권한이 없습니다.");
     }
 
 
@@ -76,7 +95,7 @@ class BoardServiceTest {
         Long commentId = getCommentId(userId, boardId);
 
         //when
-        boardService.removeBoard(boardId);
+        boardService.removeBoard(boardId, "spring@gmail.com");
         em.flush();
         em.clear();
 
@@ -88,6 +107,21 @@ class BoardServiceTest {
                 () -> commentService.findComment(commentId));
         assertThat(e2.getMessage()).isEqualTo("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId);
         assertThat(userRepository.findOne(userId).orElseThrow().getBoards().size()).isEqualTo(0);
+    }
+
+    @Test
+    void 권한_없는_게시글_삭제_에러_테스트() {
+        //given
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
+        Long boardId = getBoardId("게시글A", "내용A", userId);
+        Long commentId = getCommentId(userId, boardId);
+
+        //when
+        AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                ()-> boardService.removeBoard(boardId, "java@gmail.com"));
+
+        //then
+        assertThat(e.getMessage()).isEqualTo("해당 게시글의 삭제 권한이 없습니다.");
     }
 
 
@@ -134,13 +168,15 @@ class BoardServiceTest {
 
     private Long getBoardId(String title, String content, Long userId) {
         BoardSaveRequestDto boardDto = new BoardSaveRequestDto(title, content);
-        Long boardId = boardService.write(userId, boardDto);
+        UserResponseDto user = userService.findUser(userId);
+        Long boardId = boardService.write(user.getEmail(), boardDto);
         return boardId;
     }
 
     private Long getCommentId(Long userId, Long boardId) {
         CommentSaveRequestDto commentDto = new CommentSaveRequestDto("댓글A");
-        Long commentId = commentService.write(userId, boardId, commentDto);
+        UserResponseDto user = userService.findUser(userId);
+        Long commentId = commentService.write(user.getEmail(), boardId, commentDto);
         return commentId;
     }
 

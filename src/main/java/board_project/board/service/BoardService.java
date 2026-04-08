@@ -5,11 +5,13 @@ import board_project.board.domain.User;
 import board_project.board.dto.BoardResponseDto;
 import board_project.board.dto.BoardSaveRequestDto;
 import board_project.board.dto.BoardUpdateRequestDto;
+import board_project.board.exception.AccessDeniedException;
 import board_project.board.exception.ErrorCode;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.BoardRepository;
 import board_project.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.expression.AccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,18 +41,22 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public void updateBoard(Long boardId, BoardUpdateRequestDto dto) {
+    public void updateBoard(Long boardId, BoardUpdateRequestDto dto, String loginEmail) {
         Board board = findBoardOrThrow(boardId);
+        isOwnerForUpdate(loginEmail, board);
         board.updateBoard(dto.getTitle(), dto.getContent());
     }
 
 
     @Transactional
-    public void removeBoard(Long boardId) {
+    public void removeBoard(Long boardId, String loginEmail) {
         Board board = findBoardOrThrow(boardId);
+        isOwnerForDelete(loginEmail, board);
         board.remove();
         boardRepository.remove(board);
     }
+
+
 
     // 게시글 목록 조회
     public List<BoardResponseDto> findBoards() {
@@ -72,11 +78,27 @@ public class BoardService {
                 .toList();
     }
 
+
+
+    //게시물 존재 확인
     private Board findBoardOrThrow(Long boardId) {
         Board board = boardRepository.findOne(boardId).orElseThrow(
                 ()->new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND,
                         "해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId));
         return board;
+    }
+
+    // 본인 확인 로직
+    private static void isOwnerForDelete(String loginEmail, Board board) {
+        if (!board.getUser().getEmail().equals(loginEmail)) {
+            throw new AccessDeniedException(ErrorCode.ACCESS_DENIED, "해당 게시글의 삭제 권한이 없습니다.");
+        }
+    }
+
+    private static void isOwnerForUpdate(String loginEmail, Board board) {
+        if (!board.getUser().getEmail().equals(loginEmail)) {
+            throw new AccessDeniedException(ErrorCode.ACCESS_DENIED, "해당 게시글의 수정 권한이 없습니다.");
+        }
     }
 
 

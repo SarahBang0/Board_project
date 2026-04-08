@@ -13,7 +13,7 @@ class UserTest {
     @Test
     void 회원_생성_테스트() {
         //given
-        User user = User.createUser("회원A", "spring@gmail.com", "1234", LocalDateTime.now());
+        User user = User.createUser("회원A", "spring@gmail.com", "1234", LocalDateTime.now(), Role.USER);
 
         //when & then
         assertThat(user.getName()).isEqualTo("회원A");
@@ -23,7 +23,7 @@ class UserTest {
     @Test
     void 회원_수정_테스트() {
         //given
-        User user = User.createUser("회원A", "spring@gmail.com", "1234", LocalDateTime.now());
+        User user = User.createUser("회원A", "spring@gmail.com", "1234", LocalDateTime.now(), Role.USER);
 
         //when
         user.changeProfile("회원B", "change@gmail.com");

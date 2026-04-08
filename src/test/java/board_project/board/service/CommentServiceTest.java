@@ -4,6 +4,7 @@ import board_project.board.domain.Board;
 import board_project.board.domain.Comment;
 import board_project.board.domain.User;
 import board_project.board.dto.*;
+import board_project.board.exception.AccessDeniedException;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.BoardRepository;
 import board_project.board.repository.UserRepository;
@@ -61,7 +62,7 @@ class CommentServiceTest {
 
         //when
         CommentUpdateRequestDto commentUpdateDto = new CommentUpdateRequestDto("수정된 댓글");
-        commentService.updateComment(commentId, commentUpdateDto);
+        commentService.updateComment(commentId, commentUpdateDto, "spring@gmail.com");
         em.flush();
         em.clear();
 
@@ -70,6 +71,22 @@ class CommentServiceTest {
         assertThat(findComment.getContent()).isEqualTo("수정된 댓글");
         assertThat(findComment.getWriterName()).isEqualTo("회원A");
         assertThat(findComment.getBoardTitle()).isEqualTo("게시글A");
+    }
+
+    @Test
+    void 권한_없는_댓글_수정_에러_테스트() {
+        //given
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
+        Long boardId = getBoardId("게시글A", "내용A", userId);
+        Long commentId = getCommentId("댓글A", userId, boardId);
+
+        //when
+        CommentUpdateRequestDto commentUpdateDto = new CommentUpdateRequestDto("수정된 댓글");
+        AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                ()-> commentService.updateComment(commentId, commentUpdateDto, "java@gmail.com"));
+
+        //then
+        assertThat(e.getMessage()).isEqualTo("해당 댓글의 수정 권한이 없습니다.");
     }
 
 
@@ -82,7 +99,7 @@ class CommentServiceTest {
         Long commentId = getCommentId("댓글A", userId, boardId);
 
         //when
-        commentService.removeComment(commentId);
+        commentService.removeComment(commentId, "spring@gmail.com");
         em.flush();
 //        em.clear();
 
@@ -95,6 +112,22 @@ class CommentServiceTest {
         assertThat(e.getMessage()).isEqualTo("해당 댓글이 존재하지 않습니다. 댓글 Id : "+commentId);
         assertThat(findUser.getComments().size()).isEqualTo(0);
         assertThat(findBoard.getComments().size()).isEqualTo(0);
+    }
+
+    @Test
+    void 권한_없는_댓글_삭제_에러_테스트() {
+        //given
+        Long userId = getUserId("회원A", "spring@gmail.com", "1234");
+        Long boardId = getBoardId("게시글A", "내용A", userId);
+        Long commentId = getCommentId("댓글A", userId, boardId);
+
+        //when
+        AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                () -> commentService.removeComment(commentId, "java@gmail.com"));
+
+        //then
+        assertThat(e.getMessage()).isEqualTo("해당 댓글의 삭제 권한이 없습니다.");
+
     }
 
 
@@ -152,13 +185,15 @@ class CommentServiceTest {
 
     private Long getBoardId(String title, String content, Long userId) {
         BoardSaveRequestDto boardDto = new BoardSaveRequestDto(title, content);
-        Long boardId = boardService.write(userId, boardDto);
+        UserResponseDto user = userService.findUser(userId);
+        Long boardId = boardService.write(user.getEmail(), boardDto);
         return boardId;
     }
 
     private Long getCommentId(String content, Long userId, Long boardId) {
         CommentSaveRequestDto commentDto = new CommentSaveRequestDto(content);
-        Long commentId = commentService.write(userId, boardId, commentDto);
+        UserResponseDto user = userService.findUser(userId);
+        Long commentId = commentService.write(user.getEmail(), boardId, commentDto);
         return commentId;
     }
 

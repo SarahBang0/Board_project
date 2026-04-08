@@ -8,6 +8,8 @@ import board_project.board.service.BoardService;
 import board_project.board.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +31,9 @@ public class BoardApiController {
     // 게시글 수정
     @PatchMapping("/api/boards/{boardId}")
     public BoardResponseDto update(@PathVariable Long boardId,
-                                   @RequestBody @Valid BoardUpdateRequestDto dto) {
-        boardService.updateBoard(boardId, dto);
+                                   @RequestBody @Valid BoardUpdateRequestDto dto,
+                                   @AuthenticationPrincipal UserDetails userDetails) {
+        boardService.updateBoard(boardId, dto, userDetails.getUsername());
         return boardService.findBoard(boardId);
     }
 
@@ -54,7 +57,8 @@ public class BoardApiController {
 
     // 게시글 삭제
     @DeleteMapping("/api/boards/{boardId}")
-    public void remove(@PathVariable Long boardId) {
-        boardService.removeBoard(boardId);
+    public void remove(@PathVariable Long boardId,
+                       @AuthenticationPrincipal UserDetails userDetails) {
+        boardService.removeBoard(boardId, userDetails.getUsername());
     }
 }

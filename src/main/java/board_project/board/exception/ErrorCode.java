@@ -11,6 +11,7 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(400, "C001", "잘못된 입력값입니다."),
     METHOD_NOT_ALLOWED(405, "C002", "허용되지 않은 메서드입니다."),
     INTERNAL_SERVER_ERROR(500, "C003", "서버 내부 오류가 발생했습니다."),
+    ACCESS_DENIED(403, "C004", "허용 되지 않은 권한입니다."),
 
     // User (회원 관련)
     USER_NOT_FOUND(404, "U001", "해당 회원을 찾을 수 없습니다."),
