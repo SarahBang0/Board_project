@@ -33,16 +33,20 @@
         </div>
 
 
-            <div class="d-flex gap-2 mb-5">
-                <div sec:authorize="isAuthenticated()">
-                    <a th:href="@{/boards/{id}/edit(id=${board.boardId})}" class="btn btn-warning px-4">수정하기</a>
-                    <form th:action="@{/boards/{id}/delete(id=${board.boardId})}" method="post"
-                          onsubmit="return confirm('게시글을 삭제하시겠습니까? (댓글도 함께 삭제될 수 있습니다)');" style="display:inline;">
-                        <button type="submit" class="btn btn-danger px-4">삭제하기</button>
-                    </form>
-                </div>
-                <a href="/boards" class="btn btn-outline-secondary px-4">목록으로</a>
+        <div class="d-flex gap-2 mb-5">
+            <div sec:authorize="isAuthenticated()"
+                 th:if="${board.writerEmail == #authentication.name}">
+
+                <a th:href="@{/boards/{id}/edit(id=${board.boardId})}" class="btn btn-warning px-4">수정하기</a>
+
+                <form th:action="@{/boards/{id}/delete(id=${board.boardId})}" method="post"
+                      onsubmit="return confirm('게시글을 삭제하시겠습니까?');" style="display:inline;">
+                    <button type="submit" class="btn btn-danger px-4">삭제하기</button>
+                </form>
             </div>
+
+            <a href="/boards" class="btn btn-outline-secondary px-4">목록으로</a>
+        </div>
 
 
         <hr class="my-5">
@@ -57,13 +61,11 @@
                         <small th:text="${comment.createdDateTime}" class="text-muted ms-2"></small>
                     </div>
 
-                    <div sec:authorize="isAuthenticated()">
+                    <div sec:authorize="isAuthenticated()"
+                         th:if="${comment.writerEmail == #authentication.name}">
                         <div class="d-flex gap-1">
-                            <a th:href="@{/boards/{boardId}/comments/{commentId}/edit(boardId=${board.boardId}, commentId=${comment.commentId})}"
-                               class="btn btn-sm btn-outline-primary">수정</a>
-
-                            <form th:action="@{/boards/{boardId}/comments/{commentId}/delete(boardId=${board.boardId}, commentId=${comment.commentId})}"
-                                  method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');" class="m-0">
+                            <a th:href="@{/boards/{boardId}/comments/{commentId}/edit(boardId=${board.boardId},commentId=${comment.commentId})}" class="btn btn-sm btn-outline-primary">수정</a>
+                            <form th:action="@{/boards/{boardId}/comments/{commentId}/delete(boardId=${board.boardId},commentId=${comment.commentId})}" method="post" class="m-0">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
                             </form>
                         </div>
@@ -74,7 +76,7 @@
 
             <div class="mt-4 p-4 border rounded-4 bg-light">
                 <h5 class="fw-bold mb-3">댓글 남기기</h5>
-                <form th:action="@{/users/{userId}/boards/{boardId}/comments(userId=${userId}, boardId=${board.boardId})}" method="post">
+                <form th:action="@{/boards/{boardId}/comments(boardId=${board.boardId})}" method="post">
                     <div class="mb-3">
                         <textarea name="content" class="form-control" rows="3" placeholder="댓글을 남겨주세요." required></textarea>
                     </div>

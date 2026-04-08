@@ -20,6 +20,7 @@ public class BoardResponseDto {
     private String createdDate;
     private String createdDateTime;
     private Long userId;
+    private String writerEmail;
 
     public BoardResponseDto(Board board) {
         this.boardId = board.getId();
@@ -29,5 +30,6 @@ public class BoardResponseDto {
         this.createdDate = board.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.createdDateTime = board.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.userId = board.getUser().getId();
+        this.writerEmail = board.getUser().getEmail();
     }
 }

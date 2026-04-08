@@ -1,5 +1,6 @@
 package board_project.board.service;
 
+import board_project.board.domain.Role;
 import board_project.board.domain.User;
 import board_project.board.exception.ErrorCode;
 import board_project.board.exception.ResourceNotFoundException;
@@ -29,7 +30,7 @@ public class CustomerUserDetailService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(user.getRole().name())
                 .build();
     }
 }

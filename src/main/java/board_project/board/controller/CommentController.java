@@ -8,6 +8,8 @@ import board_project.board.service.BoardService;
 import board_project.board.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +23,12 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 작성
-    @PostMapping("/users/{userId}/boards/{boardId}/comments")
-    public String addComment(@PathVariable Long userId,
+    @PostMapping("boards/{boardId}/comments")
+    public String addComment(@AuthenticationPrincipal UserDetails userDetails,
                              @PathVariable Long boardId,
                              @Valid CommentSaveRequestDto dto) {
-        Long commentId = commentService.write(userId, boardId, dto);
+        String email = userDetails.getUsername();
+        Long commentId = commentService.write(email, boardId, dto);
         return "redirect:/boards/" + boardId;
     }
 

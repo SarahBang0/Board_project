@@ -1,5 +1,6 @@
 package board_project.board.service;
 
+import board_project.board.domain.Role;
 import board_project.board.domain.User;
 import board_project.board.dto.UserJoinRequestDto;
 import board_project.board.dto.UserResponseDto;
@@ -34,7 +35,7 @@ public class UserService {
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
 
-        User user = User.createUser(dto.getName(), dto.getEmail(), encodedPassword, LocalDateTime.now());
+        User user = User.createUser(dto.getName(), dto.getEmail(), encodedPassword, LocalDateTime.now(), Role.USER);
         userRepository.save(user);
         return user.getId();
     }

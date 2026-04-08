@@ -1,5 +1,6 @@
 package board_project.board.config;
 
+import board_project.board.domain.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,14 +24,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // API 테스트를 위해 CSRF는 잠시 끕니다.
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/join", "/login", "/", "/users", "/css/**", "/js/**").permitAll() // 회원가입은 누구나 가능
+                        .requestMatchers("/users/join", "/login", "/", "/css/**", "/js/**").permitAll() // 회원가입은 누구나 가능
+                        .requestMatchers("/users").hasRole("ADMIN")
                         .anyRequest().authenticated() // 나머지는 로그인해야 접근 가능
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("email") // ⭐ HTML의 input name과 일치시켜야 함
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/boards")
+                        .defaultSuccessUrl("/boards", true)
                         .permitAll()
                 )
                 // --- 여기부터 로그아웃 설정 추가 ---

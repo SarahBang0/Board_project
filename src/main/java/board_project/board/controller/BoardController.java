@@ -53,6 +53,7 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("comments", commentService.findCommentsByBoard(boardId));
         model.addAttribute("userId", 1L);
+        System.out.println("board.getWriterEmail() = " + board.getWriterEmail());
         return "boards/detail";
     }
 

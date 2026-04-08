@@ -3,7 +3,9 @@ package board_project.board.apiController;
 import board_project.board.dto.CommentResponseDto;
 import board_project.board.dto.CommentSaveRequestDto;
 import board_project.board.dto.CommentUpdateRequestDto;
+import board_project.board.dto.UserResponseDto;
 import board_project.board.service.CommentService;
+import board_project.board.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +17,14 @@ import java.util.List;
 public class CommentApiController {
 
     private final CommentService commentService;
+    private final UserService userService;
 
     // 댓글 작성
     @PostMapping("/api/users/{userId}/boards/{boardId}/comments")
     public Long write(@PathVariable Long userId, @PathVariable Long boardId,
                       @RequestBody @Valid CommentSaveRequestDto dto) {
-        return commentService.write(userId, boardId, dto);
+        UserResponseDto user = userService.findUser(userId);
+        return commentService.write(user.getEmail(), boardId, dto);
     }
 
     // 댓글 수정

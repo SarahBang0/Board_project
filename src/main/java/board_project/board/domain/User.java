@@ -32,13 +32,17 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     //==생성 메서드==//
-    public static User createUser(String name, String email, String password, LocalDateTime joinedDate) {
+    public static User createUser(String name, String email, String password, LocalDateTime joinedDate, Role role) {
         User user = new User();
         user.name = name;
         user.email = email;
         user.password = password;
         user.joinedDate = joinedDate;
+        user.role = role;
         return user;
     }
 

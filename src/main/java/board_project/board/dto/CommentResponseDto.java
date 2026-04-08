@@ -19,6 +19,7 @@ public class CommentResponseDto {
     private String writerName;
     private String createdDateTime;
     private Long boardId;
+    private String writerEmail;
 
     public CommentResponseDto(Comment comment) {
         this.commentId = comment.getId();
@@ -27,5 +28,6 @@ public class CommentResponseDto {
         this.writerName = comment.getUser().getName();
         this.createdDateTime = comment.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.boardId = comment.getBoard().getId();
+        this.writerEmail = comment.getUser().getEmail();
     }
 }

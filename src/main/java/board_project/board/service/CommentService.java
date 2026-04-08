@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,10 +30,10 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public Long write(Long userId, Long boardId, CommentSaveRequestDto dto) {
-        User user = userRepository.findOne(userId).orElseThrow(
+    public Long write(String email, Long boardId, CommentSaveRequestDto dto) {
+        User user = userRepository.findByEmail(email).orElseThrow(
                 ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
+                        "해당 회원이 존재하지 않습니다. 회원 email: " + email));
         Board board = boardRepository.findOne(boardId).orElseThrow(
                 ()->new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND,
                         "해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId));

@@ -35,7 +35,7 @@ public class UserController {
     }
 
     // 회원 가입
-    @PostMapping("/users")
+    @PostMapping("/users/join")
     public String join(@Valid UserJoinRequestDto dto) {
         userService.join(dto);
         return "redirect:/users";
