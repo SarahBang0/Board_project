@@ -23,7 +23,7 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 작성
-    @PostMapping("boards/{boardId}/comments")
+    @PostMapping("/boards/{boardId}/comments")
     public String addComment(@AuthenticationPrincipal UserDetails userDetails,
                              @PathVariable Long boardId,
                              @Valid CommentSaveRequestDto dto) {

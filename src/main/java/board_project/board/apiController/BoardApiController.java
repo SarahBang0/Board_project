@@ -4,10 +4,14 @@ import board_project.board.dto.BoardResponseDto;
 import board_project.board.dto.BoardSaveRequestDto;
 import board_project.board.dto.BoardUpdateRequestDto;
 import board_project.board.dto.UserResponseDto;
+import board_project.board.exception.AccessDeniedException;
+import board_project.board.exception.ErrorCode;
+import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.service.BoardService;
 import board_project.board.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.expression.AccessException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +26,15 @@ public class BoardApiController {
     private final UserService userService;
 
     // 게시글 작성
-    @PostMapping("/api/users/{userId}/boards")
-    public Long write(@PathVariable Long userId, @RequestBody @Valid BoardSaveRequestDto dto) {
-        UserResponseDto user = userService.findUser(userId);
-        return boardService.write(user.getEmail(), dto);
+    @PostMapping("/api/boards")
+    public Long write(@AuthenticationPrincipal UserDetails userDetails,
+                      @RequestBody @Valid BoardSaveRequestDto dto) {
+
+        if(userDetails == null) {
+            throw new AccessDeniedException(ErrorCode.ACCESS_DENIED, "로그인이 필요합니다.");
+        }
+        String email = userDetails.getUsername();
+        return boardService.write(email, dto);
     }
 
     // 게시글 수정

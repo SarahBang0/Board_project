@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // API 테스트를 위해 CSRF는 잠시 끕니다.
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/join", "/login", "/", "/css/**", "/js/**").permitAll() // 회원가입은 누구나 가능
+                        .requestMatchers( "/api/users/join","/users/join", "/login", "/", "/css/**", "/js/**").permitAll() // 회원가입은 누구나 가능
                         .requestMatchers("/users").hasRole("ADMIN")
                         .anyRequest().authenticated() // 나머지는 로그인해야 접근 가능
                 )

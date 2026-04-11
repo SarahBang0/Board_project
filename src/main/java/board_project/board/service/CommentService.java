@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -74,6 +73,8 @@ public class CommentService {
 
     // 게시글 별 댓글 조회
     public List<CommentResponseDto> findCommentsByBoard(Long boardId) {
+        boardRepository.findOne(boardId).orElseThrow(
+                ()-> new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND, "해당 게시글이 존재하지 않습니다. 게시글 Id : "+boardId));
         return commentRepository.findByBoard(boardId).stream()
                 .map(CommentResponseDto::new)
                 .toList();
@@ -81,6 +82,8 @@ public class CommentService {
 
     // 작성자 별 댓글 조회
     public List<CommentResponseDto> findCommentsByUser(Long userId) {
+        userRepository.findOne(userId).orElseThrow(
+                ()-> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 회원을 찾을 수 없습니다. 회원 Id : "+userId));
         return commentRepository.findByUser(userId).stream()
                 .map(CommentResponseDto::new)
                 .toList();

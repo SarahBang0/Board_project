@@ -4,6 +4,8 @@ import board_project.board.dto.CommentResponseDto;
 import board_project.board.dto.CommentSaveRequestDto;
 import board_project.board.dto.CommentUpdateRequestDto;
 import board_project.board.dto.UserResponseDto;
+import board_project.board.exception.AccessDeniedException;
+import board_project.board.exception.ErrorCode;
 import board_project.board.service.CommentService;
 import board_project.board.service.UserService;
 import jakarta.validation.Valid;
@@ -22,11 +24,14 @@ public class CommentApiController {
     private final UserService userService;
 
     // 댓글 작성
-    @PostMapping("/api/users/{userId}/boards/{boardId}/comments")
-    public Long write(@PathVariable Long userId, @PathVariable Long boardId,
+    @PostMapping("/api/boards/{boardId}/comments")
+    public Long write(@AuthenticationPrincipal UserDetails userDetails,
+                      @PathVariable Long boardId,
                       @RequestBody @Valid CommentSaveRequestDto dto) {
-        UserResponseDto user = userService.findUser(userId);
-        return commentService.write(user.getEmail(), boardId, dto);
+        if(userDetails == null) {
+            throw new AccessDeniedException(ErrorCode.ACCESS_DENIED, "로그인이 필요합니다.");
+        }
+        return commentService.write(userDetails.getUsername(), boardId, dto);
     }
 
     // 댓글 수정

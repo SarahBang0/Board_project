@@ -48,6 +48,7 @@ public class BoardService {
     }
 
 
+    // 게시글 삭제
     @Transactional
     public void removeBoard(Long boardId, String loginEmail) {
         Board board = findBoardOrThrow(boardId);

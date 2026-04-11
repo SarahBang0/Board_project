@@ -17,7 +17,7 @@ public class UserApiController {
     private final UserService userService;
 
     // 회원 가입
-    @PostMapping
+    @PostMapping("/join")
     public Long join(@RequestBody @Valid UserJoinRequestDto dto) {
         return userService.join(dto);
     }
