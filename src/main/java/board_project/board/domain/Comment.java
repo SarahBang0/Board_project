@@ -67,4 +67,9 @@ public class Comment {
             this.board.getComments().remove(this);
         }
     }
+
+    //==본인 확인 로직==//
+    public boolean isNotOwner(String loginEmail) {
+        return !user.getEmail().equals(loginEmail);
+    }
 }

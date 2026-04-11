@@ -9,6 +9,7 @@ import board_project.board.exception.ErrorCode;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -43,6 +45,7 @@ public class UserService {
     // 중복 이메일 검증 로직
     private void validateDuplicateUser(String email) {
         if(!userRepository.findByEmail(email).isEmpty()) {
+            log.warn("[중복 이메일] - 이메일 : {}", email);
             throw new DuplicateResourceException(ErrorCode.DUPLICATE_EMAIL,
                     "이미 존재하는 이메일입니다.");
         }
@@ -51,8 +54,11 @@ public class UserService {
     // 회원 조회
     public UserResponseDto findUser(Long userId) {
         User user = userRepository.findOne(userId).orElseThrow(
-                ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 회원이 존재하지 않습니다. 회원 Id: " + userId));
+                ()-> {
+                    log.warn("[회원 조회 실패] 존재하지 않는 회원 - 회원 ID : {}", userId);
+                    return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
+                            "해당 회원이 존재하지 않습니다. 회원 ID: " + userId);
+                });
         return new UserResponseDto(user);
     }
 
@@ -66,8 +72,11 @@ public class UserService {
     // 이메일로 회원 조회
     public UserResponseDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 회원이 존재하지 않습니다. 회원 email: " + email));
+                ()-> {
+                    log.warn("[회원 조회 실패] 존재하지 않는 회원 - 회원 Email : {}", email);
+                    return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
+                            "해당 회원이 존재하지 않습니다. 회원 Email: " + email);
+                });
         return new UserResponseDto(user);
     }
 }

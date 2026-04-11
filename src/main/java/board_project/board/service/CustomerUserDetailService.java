@@ -6,6 +6,7 @@ import board_project.board.exception.ErrorCode;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomerUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -25,7 +27,10 @@ public class CustomerUserDetailService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()-> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND));
+                ()-> {
+                    log.warn("존재하지 않는 회원 - 회원 Email : {}", email);
+                    return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND);
+                });
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())

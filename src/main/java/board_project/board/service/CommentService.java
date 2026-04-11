@@ -13,6 +13,7 @@ import board_project.board.repository.BoardRepository;
 import board_project.board.repository.CommentRepository;
 import board_project.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -33,12 +35,18 @@ public class CommentService {
     public Long write(String email, Long boardId, CommentSaveRequestDto dto) {
 
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()->new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 회원이 존재하지 않습니다. 회원 email: " + email));
+                ()->{
+                    log.warn("[회원 조회 실패] 존재하지 않는 회원 - 회원 Email : {}", email);
+                    return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
+                            "해당 회원이 존재하지 않습니다. 회원 email: " + email);
+                });
 
         Board board = boardRepository.findOne(boardId).orElseThrow(
-                ()->new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND,
-                        "해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId));
+                ()-> {
+                    log.warn("[게시글 조회 실패] 존재하지 않는 게시글 - 게시글 ID : {}", boardId);
+                    return new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND,
+                            "해당 게시글이 존재하지 않습니다. 게시글 ID : " + boardId);
+                });
 
         Comment comment = Comment.createComment(dto.getContent(), user, board, LocalDateTime.now());
         commentRepository.save(comment);
@@ -74,7 +82,11 @@ public class CommentService {
     // 게시글 별 댓글 조회
     public List<CommentResponseDto> findCommentsByBoard(Long boardId) {
         boardRepository.findOne(boardId).orElseThrow(
-                ()-> new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND, "해당 게시글이 존재하지 않습니다. 게시글 Id : "+boardId));
+                ()-> {
+                    log.warn("[게시글 조회 실패] 존재하지 않는 게시글 - 게시글 ID : {}", boardId);
+                    return new ResourceNotFoundException(ErrorCode.BOARD_NOT_FOUND,
+                            "해당 게시글이 존재하지 않습니다. 게시글 ID : "+boardId);
+                });
         return commentRepository.findByBoard(boardId).stream()
                 .map(CommentResponseDto::new)
                 .toList();
@@ -83,7 +95,11 @@ public class CommentService {
     // 작성자 별 댓글 조회
     public List<CommentResponseDto> findCommentsByUser(Long userId) {
         userRepository.findOne(userId).orElseThrow(
-                ()-> new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 회원을 찾을 수 없습니다. 회원 Id : "+userId));
+                ()-> {
+                    log.warn("[회원 조회 실패] 존재하지 않는 회원 - 회원 ID : {}", userId);
+                    return new ResourceNotFoundException(ErrorCode.USER_NOT_FOUND,
+                            "해당 회원을 찾을 수 없습니다. 회원 ID : "+userId);
+                });
         return commentRepository.findByUser(userId).stream()
                 .map(CommentResponseDto::new)
                 .toList();
@@ -92,20 +108,27 @@ public class CommentService {
     // 댓글 존재 여부
     private Comment findCommentOrThrow(Long commentId) {
         Comment comment = commentRepository.findOne(commentId).orElseThrow(
-                ()-> new ResourceNotFoundException(ErrorCode.COMMENT_NOT_FOUND,
-                        "해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId));
+                ()-> {
+                    log.warn("[댓글 조회 실패] 존재하지 않는 댓글 - 댓글 ID : {}", commentId);
+                    return new ResourceNotFoundException(ErrorCode.COMMENT_NOT_FOUND,
+                            "해당 댓글이 존재하지 않습니다. 댓글 ID : " + commentId);
+                });
         return comment;
     }
 
     // 본인 확인 로직
     private static void isOwnerForDelete(String loginEmail, Comment comment) {
-        if(!comment.getUser().getEmail().equals(loginEmail)) {
+        if(comment.isNotOwner(loginEmail)) {
+            log.warn("[삭제 권한 없음] - 사용자 : {}, 작성자 : {}, 댓글 ID : {}",
+                    loginEmail, comment.getUser().getEmail(), comment.getId());
             throw new AccessDeniedException(ErrorCode.ACCESS_DENIED, "해당 댓글의 삭제 권한이 없습니다.");
         }
     }
 
     private static void isOwnerForUpdate(String loginEmail, Comment comment) {
-        if(!comment.getUser().getEmail().equals(loginEmail)) {
+        if(comment.isNotOwner(loginEmail)) {
+            log.warn("[수정 권한 없음] - 사용자 : {}, 작성자 : {}, 댓글 ID : {}",
+                    loginEmail, comment.getUser().getEmail(), comment.getId());
             throw new AccessDeniedException(ErrorCode.ACCESS_DENIED, "해당 댓글의 수정 권한이 없습니다.");
         }
     }

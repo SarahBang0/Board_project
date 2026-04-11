@@ -102,10 +102,10 @@ class BoardServiceTest {
         //then
         ResourceNotFoundException e1 = assertThrows(ResourceNotFoundException.class,
                 ()->boardService.findBoard(boardId));
-        assertThat(e1.getMessage()).isEqualTo("해당 게시글이 존재하지 않습니다. 게시글 Id : " + boardId);
+        assertThat(e1.getMessage()).isEqualTo("해당 게시글이 존재하지 않습니다. 게시글 ID : " + boardId);
         ResourceNotFoundException e2 = assertThrows(ResourceNotFoundException.class,
                 () -> commentService.findComment(commentId));
-        assertThat(e2.getMessage()).isEqualTo("해당 댓글이 존재하지 않습니다. 댓글 Id : " + commentId);
+        assertThat(e2.getMessage()).isEqualTo("해당 댓글이 존재하지 않습니다. 댓글 ID : " + commentId);
         assertThat(userRepository.findOne(userId).orElseThrow().getBoards().size()).isEqualTo(0);
     }
 
