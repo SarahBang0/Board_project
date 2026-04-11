@@ -48,8 +48,13 @@ public class BoardApiController {
 
     // 전체 게시글 조회
     @GetMapping("/api/boards")
-    public List<BoardResponseDto> findBoards() {
-        return boardService.findBoards();
+    public List<BoardResponseDto> findBoards(@RequestParam(required = false) String keyword) {
+        if(keyword != null && !keyword.trim().isEmpty()) {
+            return boardService.searchBoards(keyword);
+        } else {
+            return boardService.findBoards();
+        }
+
     }
 
     // 단일 게시글 조회

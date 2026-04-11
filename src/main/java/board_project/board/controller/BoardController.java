@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -23,14 +24,6 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
-
-    // 목록 보기
-    @GetMapping("/boards")
-    public String getList(Model model) {
-        List<BoardResponseDto> boards = boardService.findBoards();
-        model.addAttribute("boards", boards);
-        return "boards/list";
-    }
 
     // 글 작성 폼 이동
     @GetMapping("/boards/new")
@@ -44,6 +37,22 @@ public class BoardController {
         String email = userDetails.getUsername();
         Long boardId = boardService.write(email, dto);
         return "redirect:/boards/" + boardId;
+    }
+
+    // 목록 보기 (제목으로 검색 기능 추가)
+    @GetMapping("/boards")
+    public String getList(@RequestParam(required = false) String keyword, Model model) {
+        List<BoardResponseDto> boards;
+
+        if(keyword != null && !keyword.trim().isEmpty()) {
+            boards = boardService.searchBoards(keyword);
+        } else {
+            boards = boardService.findBoards();
+        }
+        model.addAttribute("boards", boards);
+        model.addAttribute("keyword", keyword);
+
+        return "boards/list";
     }
 
     // 글 상세 보기
@@ -80,4 +89,5 @@ public class BoardController {
         boardService.removeBoard(boardId, userDetails.getUsername());
         return "redirect:/boards";
     }
+
 }

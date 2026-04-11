@@ -87,6 +87,13 @@ public class BoardService {
                 .toList();
     }
 
+    // 제목으로 게시글 검색하기
+    public List<BoardResponseDto> searchBoards(String keyword) {
+        if(keyword == null && keyword.trim().isEmpty()) {
+            return boardRepository.findAll().stream().map(BoardResponseDto::new).toList();
+        }
+        return boardRepository.findByTitle(keyword).stream().map(BoardResponseDto::new).toList();
+    }
 
 
     //게시물 존재 확인

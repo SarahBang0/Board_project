@@ -35,4 +35,10 @@ public class BoardRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+
+    public List<Board> findByTitle(String keyword) {
+        return em.createQuery("select b from Board b where b.title like : keyword", Board.class)
+                .setParameter("keyword", "%"+keyword+"%")
+                .getResultList();
+    }
 }
