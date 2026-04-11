@@ -1,10 +1,8 @@
 package board_project.board.controller;
 
-import board_project.board.dto.BoardResponseDto;
 import board_project.board.dto.CommentResponseDto;
 import board_project.board.dto.CommentSaveRequestDto;
 import board_project.board.dto.CommentUpdateRequestDto;
-import board_project.board.service.BoardService;
 import board_project.board.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

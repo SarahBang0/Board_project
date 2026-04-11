@@ -1,12 +1,10 @@
 package board_project.board.service;
 
-import board_project.board.domain.Board;
 import board_project.board.dto.*;
 import board_project.board.exception.AccessDeniedException;
 import board_project.board.exception.ResourceNotFoundException;
 import board_project.board.repository.UserRepository;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +40,7 @@ class BoardServiceTest {
         em.clear(); // 1차 캐시 비우기
 
         //then
-        BoardResponseDto findBoard = boardService.findBoard(boardId);
+        BoardDetailResponseDto findBoard = boardService.findBoard(boardId);
         assertThat(findBoard.getWriterName()).isEqualTo("회원A");
         assertThat(findBoard.getTitle()).isEqualTo("게시글A");
     }
@@ -63,7 +61,7 @@ class BoardServiceTest {
         em.clear();
 
         //then
-        BoardResponseDto findBoard = boardService.findBoard(boardId);
+        BoardDetailResponseDto findBoard = boardService.findBoard(boardId);
         assertThat(findBoard.getWriterName()).isEqualTo("회원A");
         assertThat(findBoard.getTitle()).isEqualTo("게시글B");
     }
@@ -135,7 +133,7 @@ class BoardServiceTest {
         em.clear();
 
         //when
-        List<BoardResponseDto> boards = boardService.findBoardsByUser(userId);
+        List<BoardListResponseDto> boards = boardService.findBoardsByUser(userId);
 
         //then
         assertThat(boards.size()).isEqualTo(2);
@@ -152,7 +150,7 @@ class BoardServiceTest {
         em.clear();
 
         //when
-        List<BoardResponseDto> boards = boardService.findBoards();
+        List<BoardListResponseDto> boards = boardService.findBoards();
 
         //then
         assertThat(boards.size()).isEqualTo(2);

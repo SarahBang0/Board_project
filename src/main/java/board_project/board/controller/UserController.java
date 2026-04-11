@@ -1,10 +1,6 @@
 package board_project.board.controller;
 
-import board_project.board.domain.Board;
-import board_project.board.dto.BoardResponseDto;
-import board_project.board.dto.CommentResponseDto;
-import board_project.board.dto.UserJoinRequestDto;
-import board_project.board.dto.UserResponseDto;
+import board_project.board.dto.*;
 import board_project.board.service.BoardService;
 import board_project.board.service.CommentService;
 import board_project.board.service.UserService;
@@ -59,7 +55,7 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public String userDetail(@PathVariable Long userId, Model model) {
         UserResponseDto user = userService.findUser(userId);
-        List<BoardResponseDto> boardsByUser = boardService.findBoardsByUser(userId);
+        List<BoardListResponseDto> boardsByUser = boardService.findBoardsByUser(userId);
         List<CommentResponseDto> commentsByUser = commentService.findCommentsByUser(userId);
         model.addAttribute("user", user);
         model.addAttribute("boards", boardsByUser);
